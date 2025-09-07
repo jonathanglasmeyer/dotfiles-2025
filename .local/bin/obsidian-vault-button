@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Simple Obsidian Vault Sorter Launcher
+# Creates a temporary app icon in dock when run
+
+VAULT_PATH="/Users/jonathan.glasmeyer/Projects/obsidian-vault"
+INBOX_FILE="$VAULT_PATH/INBOX.md"
+
+# Check inbox status
+if [[ -f "$INBOX_FILE" ]] && [[ -s "$INBOX_FILE" ]]; then
+    COUNT=$(grep -c '.' "$INBOX_FILE" 2>/dev/null || echo 0)
+    TITLE="📦 Vault Sort ($COUNT items)"
+else
+    TITLE="📦 Vault Sort (empty)"
+fi
+
+# Show dialog and launch on OK
+RESULT=$(osascript <<EOF
+display dialog "$TITLE
+
+Click OK to open Claude vault sorter in iTerm." buttons {"Cancel", "Sort Vault"} default button "Sort Vault" with title "Obsidian Vault Sorter"
+EOF
+)
+
+if [[ "$RESULT" == *"Sort Vault"* ]]; then
+    ~/.local/bin/vault-click
+fi

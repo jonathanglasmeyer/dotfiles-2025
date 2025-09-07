@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+
+echo "Building Obsidian Vault Sorter..."
+cd ~/.local/src/ObsidianVaultSorter
+swift build -c release
+
+echo "Installing binary..."
+cp .build/release/ObsidianVaultSorter ~/.local/bin/
+chmod +x ~/.local/bin/ObsidianVaultSorter
+
+echo "Code signing binary..."
+sudo codesign --force --deep --sign - ~/.local/bin/ObsidianVaultSorter
+
+echo "Reloading LaunchAgent..."
+launchctl unload ~/Library/LaunchAgents/com.local.obsidianvaultsorter.plist 2>/dev/null || true
+launchctl load ~/Library/LaunchAgents/com.local.obsidianvaultsorter.plist
+
+echo "✅ Obsidian Vault Sorter updated and restarted!"

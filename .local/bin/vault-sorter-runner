@@ -1,0 +1,3 @@
+#!/bin/bash
+export OBSIDIAN_VAULT_PATH="/Users/jonathan.glasmeyer/Projects/obsidian-vault"
+exec ~/.local/bin/ObsidianVaultSorter

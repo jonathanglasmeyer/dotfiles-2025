@@ -1,0 +1,70 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm:*)",
+      "Bash(./gradlew assembleDebug)",
+      "Bash(grep:*)",
+      "Bash(git add -A)",
+      "Bash(grep:*)",
+      "Bash(npx:*)",
+      "Bash(pkill:*)",
+      "Bash(adb uninstall:*)",
+      "Bash(./gradlew:*)",
+      "Bash(export:*)",
+      "Bash(git commit:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(mv:*)",
+      "Bash(mkdir:*)",
+      "Bash(cd:*)",
+      "Bash(pnpm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(timeout 10s npx react-native start --reset-cache)",
+      "Bash(echo $JAVA_HOME)",
+      "Bash(adb logcat:*)",
+      "Bash(curl:*)",
+      "Bash(adb shell:*)",
+      "Bash(adb install:*)",
+      "Bash(npm run lint)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "Bash(timeout 10 adb logcat:*)",
+      "Bash(gtimeout:*)",
+      "Bash(bunx ccstatusline:*)",
+      "Bash(bunx:*)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notification.sh"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notification.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "feedbackSurveyState": {
+    "lastShownTime": 1754084320835
+  },
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "statusLine": {
+    "type": "command",
+    "command": "bunx ccstatusline@latest"
+  },
+  "model": "sonnet"
+}

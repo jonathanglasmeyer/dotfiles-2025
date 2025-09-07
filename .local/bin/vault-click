@@ -1,0 +1,12 @@
+#!/bin/bash
+VAULT_PATH="/Users/jonathan.glasmeyer/Projects/obsidian-vault"
+
+osascript <<EOF
+tell application "iTerm"
+    activate
+    set newWindow to (create window with profile "ObsidianVault")
+    tell current session of newWindow
+        write text "claude \"/vault-content-processor\""
+    end tell
+end tell
+EOF

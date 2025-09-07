@@ -1,0 +1,12 @@
+[user]
+	email = glasmeyer@posteo.de
+	name = Jonathan Glasmeyer
+
+[alias]
+  pr = "!f() { \
+    branch=$(git symbolic-ref --short HEAD); \
+    base=${1:-main}; \
+    git push -u origin \"$branch\" && \
+    gh pr create --base \"$base\" --head \"$branch\" --fill; \
+  }; f"
+  ci = commit

@@ -1,0 +1,174 @@
+# =============================================================================
+# Personal Dotfiles .gitignore
+# =============================================================================
+
+# System Files
+# -----------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.tmp
+*.temp
+
+# Logs and Databases
+# -----------------------------------------------------------------------------
+*.log
+*.sqlite
+*.db
+*.sql
+
+# Personal/Sensitive Information
+# -----------------------------------------------------------------------------
+# Keep SSH keys private but track config
+.ssh/id_*
+.ssh/*_rsa*
+.ssh/*_ed25519*
+.ssh/known_hosts*
+.ssh/*.pem
+.ssh/*.key
+
+# AWS and Cloud Credentials
+.aws/credentials
+.aws/config
+.azure/
+.gcloud/
+
+# API Keys and Tokens
+.openai_api_key
+.anthropic_api_key
+*api_key*
+*token*
+*.env
+*.env.*
+
+# Shell History (contains sensitive commands)
+.zsh_history
+.bash_history
+.sh_history
+.history
+.lesshst
+
+# Dynamic/Cache Data (shouldn't be in dotfiles repo)
+# -----------------------------------------------------------------------------
+.local/share/*/
+.local/state/*/
+.local/cache/*/
+.config/*/cache/
+.config/*/logs/
+.config/stripe/
+*.pid
+
+# Browser Data
+Library/Application Support/Google/
+Library/Application Support/Firefox/
+Library/Application Support/Chrome/
+
+# Large Directories
+# -----------------------------------------------------------------------------
+Applications/
+Desktop/
+Documents/
+Downloads/
+Movies/
+Music/
+Pictures/
+Public/
+Library/
+CascadeProjects/
+Projects/
+Google Drive/
+MOIA GmbH/
+hetzner*
+Utilities/
+conductor/
+
+# Temporary and Build Files
+# -----------------------------------------------------------------------------
+*.swp
+*.swo
+*~
+.tmp/
+tmp/
+temp/
+build/
+dist/
+node_modules/
+target/
+*.class
+*.jar
+*.war
+
+# IDE and Editor Files
+# -----------------------------------------------------------------------------
+.viminfo
+.vim/
+.netrwhist
+*.sublime-*
+
+# OS Generated Files
+# -----------------------------------------------------------------------------
+.CFUserTextEncoding
+.localized
+install.log
+response.json
+
+# Antidote/Plugin Cache
+# -----------------------------------------------------------------------------
+.antidote/
+.zsh_plugins.zsh
+
+# Application Specific
+# -----------------------------------------------------------------------------
+.spicetify/
+.vuescanrc
+.z
+.fzf.zsh
+.fzf.bash
+
+# Claude Code - Exclude session data but keep config
+# -----------------------------------------------------------------------------
+.claude/todos/
+.claude/shell-snapshots/
+.claude/statsig/
+
+# Keep These Important Dotfiles
+# -----------------------------------------------------------------------------
+!.gitconfig
+!.gitignore
+!.zshrc
+!.bashrc
+!.zshenv
+!.zprofile
+!.p10k.zsh
+!.zsh_plugins.txt
+!.profile
+!.claude/CLAUDE.md
+!.claude/commands/
+!.claude/hooks/
+!.claude/settings.json
+!.claude/plugins/
+!.ssh/config
+
+# Fix security hook regex patterns
+# Simplified security hook patterns
+
+# AWS SSO sensitive data
+.config/aws-sso/cache.json
+.config/aws-sso/storage.lock
+
+# GitHub CLI tokens/auth
+.config/gh/hosts.yml
+.config/gh/accounts.yml
+
+# Other sensitive configs
+.config/*/credentials
+.config/*/tokens
+.config/*/auth
+.ssh/known_hosts
+.ssh/id_*
+.aws/credentials
+.aws/config

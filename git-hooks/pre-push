@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+#
+# Pre-push hook for secret detection
+# Prevents accidental commit of sensitive information
+#
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+# Function to print colored output
+print_error() {
+    echo -e "${RED}ERROR:${NC} $1" >&2
+}
+
+print_warning() {
+    echo -e "${YELLOW}WARNING:${NC} $1" >&2
+}
+
+print_success() {
+    echo -e "${GREEN}SUCCESS:${NC} $1" >&2
+}
+
+# Get the range of commits to check
+remote="$1"
+url="$2"
+
+# Read stdin to get the range
+while read local_ref local_sha remote_ref remote_sha; do
+    if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+        # Handle delete
+        continue
+    fi
+    
+    if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+        # New branch, examine all commits
+        range="$local_sha"
+    else
+        # Update to existing branch, examine new commits
+        range="$remote_sha..$local_sha"
+    fi
+    
+    echo "🔍 Checking commits for secrets..."
+    
+    # Check each commit in the range
+    secrets_found=false
+    
+    for commit in $(git rev-list $range); do
+        echo "  Checking commit $(git rev-parse --short $commit)..."
+        
+        # Get the diff for this commit
+        commit_diff=$(git show --no-merges --format="" $commit)
+        
+        # Skip if no changes
+        if [ -z "$commit_diff" ]; then
+            continue
+        fi
+        
+        # Simple pattern checks with basic grep
+        if echo "$commit_diff" | grep -q "api.key.*=" ||
+           echo "$commit_diff" | grep -q "secret.key.*=" ||
+           echo "$commit_diff" | grep -q "password.*=" ||
+           echo "$commit_diff" | grep -q "token.*=" ||
+           echo "$commit_diff" | grep -q "AKIA[0-9A-Z]\{16\}" ||
+           echo "$commit_diff" | grep -q "gh[pous]_[A-Za-z0-9_]\{30,\}" ||
+           echo "$commit_diff" | grep -q "BEGIN.*PRIVATE.*KEY" ||
+           echo "$commit_diff" | grep -q "mysql://.*:.*@" ||
+           echo "$commit_diff" | grep -q "postgres://.*:.*@" ||
+           echo "$commit_diff" | grep -q "mongodb://.*:.*@"; then
+            
+            if [ "$secrets_found" = false ]; then
+                print_error "Potential secrets detected in commit $(git rev-parse --short $commit)!"
+                echo ""
+                secrets_found=true
+            fi
+            
+            # Show some context
+            echo "Suspicious lines:"
+            echo "$commit_diff" | grep -n -E "(api|secret|password|token|AKIA|gh[pous]_|BEGIN.*PRIVATE|mysql://|postgres://|mongodb://)" | head -3
+            echo ""
+        fi
+        
+        # Check for common secret file patterns
+        secret_files=$(git diff-tree --no-commit-id --name-only -r $commit | grep -E "\.(pem|key|p12|pfx)$|id_rsa|id_dsa|credentials|\.env$" || true)
+        
+        if [ ! -z "$secret_files" ]; then
+            if [ "$secrets_found" = false ]; then
+                print_error "Potential secret files detected!"
+                echo ""
+                secrets_found=true
+            fi
+            
+            print_error "Commit: $(git rev-parse --short $commit)"
+            print_error "Suspicious files:"
+            echo "$secret_files" | sed 's/^/  /'
+            echo ""
+        fi
+    done
+    
+    if [ "$secrets_found" = true ]; then
+        echo ""
+        print_error "🚫 Push rejected due to potential secrets in commit history."
+        echo ""
+        echo "To fix this:"
+        echo "1. Remove the secrets from your code"
+        echo "2. If secrets are in old commits, use 'git rebase -i' to edit history"
+        echo "3. For sensitive files, add them to .gitignore"
+        echo "4. Consider using environment variables or secret management tools"
+        echo ""
+        echo "To bypass this check (NOT RECOMMENDED):"
+        echo "  git push --no-verify"
+        echo ""
+        exit 1
+    fi
+done
+
+print_success "🔒 No secrets detected. Push allowed."
+exit 0
